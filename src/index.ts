@@ -30,6 +30,6 @@ class Crowller {
   }
 }
 
-const url = `https://movie.douban.com/`;
+const url = `https://movie.douban.com/`;   
 const analyzer = Analyzer.getInstance();
 new Crowller(url, analyzer);
