@@ -1,6 +1,6 @@
 import cheerio from "cheerio";
 import fs from "fs";
-import { AnalyzerC } from "./index";
+import { AnalyzerC } from "./crowller";
 interface moveListItem {
   title: string;
   grade: number | string;

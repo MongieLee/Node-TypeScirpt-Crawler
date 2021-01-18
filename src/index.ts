@@ -1,35 +1,24 @@
-import superagent from "superagent";
-import fs from "fs";
-import path from "path";
-import Analyzer from "./analyzer";
+import express, { Request, NextFunction } from "express";
+import router from "./router";
+import bodyParser from "body-parser";
+import cookieSession from "cookie-session";
+const app = express();
+// console.log(bodyParser)
+app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 
-export interface AnalyzerC {
-  analyze(html: string, filePath: string): string;
-}
+app.use(
+  cookieSession({
+    name: "session",
+    keys: [
+      /* secret keys */
+      "lemon",
+    ],
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  })
+);
+app.use(router);
 
-class Crowller {
-  private filePath = path.resolve(__dirname, "../data/spiderData.json");
-
-  private async initSpiderProcess() {
-    const html = await this.getRawHtml();
-    const dateResult = this.analyzer.analyze(html, this.filePath);
-    console.log(dateResult);
-    this.writeFile(dateResult);
-  }
-
-  private writeFile(data: string) {
-    fs.writeFileSync(this.filePath, data);
-  }
-
-  private async getRawHtml(): Promise<string> {
-    return (await superagent.get(this.url)).text;
-  }
-
-  constructor(private url: string, private analyzer: AnalyzerC) {
-    this.initSpiderProcess();
-  }
-}
-
-const url = `https://movie.douban.com/`;   
-const analyzer = Analyzer.getInstance();
-new Crowller(url, analyzer);
+app.listen(3333, () => {
+  console.log(`333端口启动成功`);
+});
