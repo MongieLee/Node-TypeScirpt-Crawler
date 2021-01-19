@@ -7,7 +7,7 @@ export interface AnalyzerC {
 }
 
 export default class Crowller {
-  private filePath = path.resolve(__dirname, "../data/spiderData.json");
+  private filePath = path.resolve(__dirname, "../../data/spiderData.json");
 
   private async initSpiderProcess() {
     const html = await this.getRawHtml();
@@ -27,4 +27,3 @@ export default class Crowller {
     this.initSpiderProcess();
   }
 }
-
