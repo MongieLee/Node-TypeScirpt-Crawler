@@ -22,5 +22,5 @@ app.use(
 app.use(router);
 
 app.listen(3333, () => {
-  console.log(`333端口启动成功`);
+  console.log(`3333端口启动成功`);
 });

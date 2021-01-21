@@ -6,6 +6,7 @@ import Crowller from "../utils/crowller";
 import Analyzer from "../utils/analyzer";
 import fs from "fs";
 import path from "path";
+import { getJSDocClassTag } from "typescript";
 
 interface BodyRequest extends Request {
   body: {
@@ -25,7 +26,7 @@ const checkLogin = (
   }
 };
 
-@controller("/")
+@controller("/api")
 export class CrowllerController {
   @get("/getData")
   @use(checkLogin)

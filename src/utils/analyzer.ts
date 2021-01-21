@@ -1,14 +1,11 @@
 import cheerio from "cheerio";
 import fs from "fs";
 import { AnalyzerC } from "./crowller";
+import dayjs from "dayjs";
 interface moveListItem {
   title: string;
   grade: number | string;
-}
-
-interface moveResult {
-  time: number;
-  data: moveListItem[];
+  time: string;
 }
 
 interface Content {
@@ -24,16 +21,15 @@ export default class Analyzer implements AnalyzerC {
     return Analyzer.instance;
   }
 
-  private generateJsonContent(jsonContent: moveResult, filePath: string) {
-    let fileContent: Content = {};
+  private generateJsonContent(jsonContent: moveListItem[], filePath: string) {
+    let fileContent: moveListItem[] = [];
     if (fs.existsSync(filePath)) {
       fileContent = JSON.parse(fs.readFileSync(filePath, "utf-8"));
     }
-    fileContent[jsonContent.time] = jsonContent.data;
-    return fileContent;
+    return [...fileContent, ...jsonContent];
   }
 
-  private getMoveInfo(html: string): moveResult {
+  private getMoveInfo(html: string): moveListItem[] {
     const moveLIst: moveListItem[] = [];
     const $ = cheerio.load(html);
     const items = $("#screening .ui-slide-content > .ui-slide-item").filter(
@@ -45,15 +41,20 @@ export default class Analyzer implements AnalyzerC {
       const grade = parseInt($(element).find(".subject-rate").text(), 10);
       const noData = $(element).find(".text-tip").text();
       if (noData) {
-        moveLIst.push({ title: moveTitle, grade: noData });
+        moveLIst.push({
+          title: moveTitle,
+          grade: 0,
+          time: dayjs().format("YY-MM-DD HH:mm:ss"),
+        });
       } else {
-        moveLIst.push({ title: moveTitle, grade });
+        moveLIst.push({
+          title: moveTitle,
+          grade: grade,
+          time: dayjs().format("YY-MM-DD HH:mm:ss"),
+        });
       }
     });
-    return {
-      time: new Date().getTime(),
-      data: moveLIst,
-    };
+    return moveLIst;
   }
 
   private constructor() {}
